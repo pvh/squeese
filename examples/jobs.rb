@@ -1,7 +1,7 @@
 $LOAD_PATH.unshift '../lib'
-require 'stalker'
+require 'squeese'
 
-include Stalker
+include Squeese
 
 job 'send.email' do |args|
 	log "Sending email to #{args['email']}"

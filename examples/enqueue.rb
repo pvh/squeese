@@ -1,5 +1,5 @@
 $LOAD_PATH.unshift '../lib'
-require 'stalker'
+require 'squeese'
 
-Stalker.enqueue('send.email', :email => 'hello@example.com')
-Stalker.enqueue('cleanup.strays')
+Squeese.enqueue('send.email', :email => 'hello@example.com')
+Squeese.enqueue('cleanup.strays')

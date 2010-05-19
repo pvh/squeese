@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
-require File.dirname(__FILE__) + '/../lib/stalker'
+require File.dirname(__FILE__) + '/../lib/squeese'
 
-usage = "stalk <jobs.rb> [<job>[,<job>,..]]"
+usage = "squeese <jobs.rb>"
 file = ARGV.shift or abort usage
 jobs = ARGV.shift.split(',') rescue nil
 
@@ -13,4 +13,4 @@ trap('INT') do
 	exit
 end
 
-Stalker.work jobs
+Squeese.work jobs

@@ -1,13 +1,16 @@
-require 'beanstalk-client'
+require 'right_aws'
 require 'json'
 require 'uri'
 
-module Stalker
+module Squeese
 	extend self
 
+	def purge
+		queue.delete
+	end
+
 	def enqueue(job, args={})
-		beanstalk.use job
-		beanstalk.put [ job, args ].to_json
+		queue.send_message [ job, args ].to_json
 	end
 
 	def job(j, &block)
@@ -29,25 +32,28 @@ module Stalker
 
 		log "Working #{jobs.size} jobs  :: [ #{jobs.join(' ')} ]"
 
-		beanstalk.list_tubes_watched.each { |tube| beanstalk.ignore(tube) }
-		jobs.each { |job| beanstalk.watch(job) }
-
 		loop do
 			work_one_job
 		end
 	end
 
 	def work_one_job
-		job = beanstalk.reserve
-		name, args = JSON.parse job.body
+		msg = queue.receive
+
+		# don't be CPU greedy on a quiet queue
+		unless msg
+			sleep 2
+			return
+		end
+
+		name, args = JSON.parse msg.body
 		log_job(name, args)
 		handler = @@handlers[name]
 		raise(NoSuchJob, name) unless handler
 		handler.call(args)
-		job.delete
+		msg.delete
 	rescue => e
-		STDERR.puts exception_message(e)
-		job.bury
+		log exception_message(e)
 	end
 
 	def log_job(name, args)
@@ -62,20 +68,16 @@ module Stalker
 		puts "[#{Time.now}] #{msg}"
 	end
 
-	def beanstalk
-		@@beanstalk ||= Beanstalk::Pool.new([ beanstalk_host_and_port ])
+	def sqs
+		@sqs ||= RightAws::SqsGen2.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY'], :logger => Logger.new(nil))
 	end
 
-	def beanstalk_url
-		ENV['BEANSTALK_URL'] || 'beanstalk://localhost:11300/'
+	def queue_name
+		ENV["SQS_QUEUE"] || "squeese"
 	end
 
-	class BadURL < RuntimeError; end
-
-	def beanstalk_host_and_port
-		uri = URI.parse(beanstalk_url)
-		raise(BadURL, beanstalk_url) if uri.scheme != 'beanstalk'
-		return "#{uri.host}:#{uri.port}"
+	def queue
+		sqs.queue(queue_name, true)
 	end
 
 	def exception_message(e)

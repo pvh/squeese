@@ -1,17 +1,18 @@
 require 'jeweler'
 
 Jeweler::Tasks.new do |s|
-	s.name = "stalker"
-	s.summary = "A job queueing and background workers system using Beanstalkd."
-	s.description = "A job queueing and background workers system using Beanstalkd.  Inspired by the Minion gem."
-	s.author = "Adam Wiggins"
-	s.email = "adam@heroku.com"
-	s.homepage = "http://github.com/adamwiggins/stalker"
-	s.executables = [ "stalk" ]
-	s.rubyforge_project = "stalker"
+	s.name = "squeese"
+	s.summary = "A job queueing and background workers system using SQS."
+	s.description = "A job queueing and background workers system using SQS.  Inspired by the Stalker gem."
+	s.author = "Peter van Hardenberg"
+	s.email = "pvh@heroku.com"
+	s.homepage = "http://github.com/pvh/squeese"
+	s.executables = [ "squeese" ]
+	s.rubyforge_project = "squeese"
 
-	s.add_dependency 'beanstalk-client'
-	
+	s.add_dependency 'right_aws'
+	s.add_dependency 'json_pure'
+
 	s.files = FileList["[A-Z]*", "{bin,lib}/**/*"]
 end
 
