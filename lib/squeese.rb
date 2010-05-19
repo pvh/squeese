@@ -21,10 +21,12 @@ module Squeese
 	class NoJobsDefined < RuntimeError; end
 	class NoSuchJob < RuntimeError; end
 
-	def work(jobs=nil)
+	def work
 		raise NoJobsDefined unless defined?(@@handlers)
 
-		jobs ||= all_jobs
+		# this makes more sense when we get support for working a subset
+		# of the available jobs.
+		jobs = all_jobs
 
 		jobs.each do |job|
 			raise(NoSuchJob, job) unless @@handlers[job]
