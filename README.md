@@ -80,9 +80,9 @@ Tidbits
 Meta
 ----
 
-Created by Adam Wiggins
+Created by Peter van Hardenberg (sort of)
 
-Heavily inspired by [Minion](http://github.com/orionz/minion) and [Stalker](http://github.com/adamwiggins/stalker) by Orion Henry and Adam Wiggins, respectively.
+Heavily inspired by^W^Wderived from [Minion](http://github.com/orionz/minion) and [Stalker](http://github.com/adamwiggins/stalker) by Orion Henry and Adam Wiggins, respectively.
 
 Released under the MIT License: http://www.opensource.org/licenses/mit-license.php
 
