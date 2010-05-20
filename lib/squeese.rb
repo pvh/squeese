@@ -1,4 +1,5 @@
-require 'right_aws'
+require 'active_support' # workaround for bug with directly requiring aws
+require 'aws'
 require 'json'
 require 'uri'
 
@@ -71,7 +72,7 @@ module Squeese
 	end
 
 	def sqs
-		@sqs ||= RightAws::SqsGen2.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY'], :logger => Logger.new(nil))
+		@sqs ||= Aws::Sqs.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY'], :logger => Logger.new(nil))
 	end
 
 	def queue_name

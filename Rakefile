@@ -10,7 +10,7 @@ Jeweler::Tasks.new do |s|
 	s.executables = [ "squeese" ]
 	s.rubyforge_project = "squeese"
 
-	s.add_dependency 'right_aws'
+	s.add_dependency 'aws'
 	s.add_dependency 'json_pure'
 
 	s.files = FileList["[A-Z]*", "{bin,lib}/**/*"]
