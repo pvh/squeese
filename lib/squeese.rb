@@ -50,6 +50,7 @@ module Squeese
 		end
 
 		name, args = JSON.parse msg.body
+		args = Hash.new {|h,k| h[k.to_s] if h.keys.include? k.to_s}.merge(args)
 		log_job(name, args)
 		handler = @@handlers[name]
 		raise(NoSuchJob, name) unless handler

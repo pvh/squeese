@@ -23,7 +23,7 @@ In a standalone file, typically jobs.rb or worker.rb:
     include Squeese
 
     job 'email.send' do |args|
-      Pony.send(:to => args['to'], :subject => "Hello there")
+      Pony.send(:to => args[:to], :subject => "Hello there")
     end
 
     job 'post.cleanup.all' do |args|
@@ -33,7 +33,7 @@ In a standalone file, typically jobs.rb or worker.rb:
     end
 
     job 'post.cleanup' do |args|
-      Post.find(args['id']).cleanup
+      Post.find(args[:id]).cleanup
     end
 
 Running
@@ -76,6 +76,7 @@ Tidbits
 * The default queue name used by squeese is "squeese", but you can select a different queue with ENV['SQUEESE_QUEUE'].
 * The squeese binary is just for convenience, you can also run a worker with a straight Ruby command:
     $ ruby -r jobs -e Squeese.work
+* Hash keys at the root of the args level are also available as symbols through a minor cheat, but nested child hashes are not.
 
 Meta
 ----
