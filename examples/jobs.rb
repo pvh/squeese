@@ -3,6 +3,8 @@ require 'squeese'
 
 include Squeese
 
+Squeese.queue_name = "example"
+
 job 'send.email' do |args|
 	log "Sending email to #{args['email']}"
 end

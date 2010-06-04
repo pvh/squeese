@@ -76,8 +76,12 @@ module Squeese
 		@sqs ||= Aws::Sqs.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY'], :logger => Logger.new(nil))
 	end
 
+	def queue_name=(val)
+		@@queue_name = val
+	end
+
 	def queue_name
-		ENV["SQS_QUEUE"] || "squeese"
+		@@queue_name ||= "squeese"
 	end
 
 	def queue

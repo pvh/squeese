@@ -77,6 +77,7 @@ Tidbits
 * The squeese binary is just for convenience, you can also run a worker with a straight Ruby command:
     $ ruby -r jobs -e Squeese.work
 * Hash keys at the root of the args level are also available as symbols through a minor cheat, but nested child hashes are not.
+* You can select a particular SQS queue with Squeese.queue_name
 
 Meta
 ----
