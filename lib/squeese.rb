@@ -41,7 +41,7 @@ module Squeese
 	end
 
 	def work_one_job
-		msg = queue.receive
+		msg = queue.pop
 
 		# don't be CPU greedy on a quiet queue
 		unless msg
@@ -55,11 +55,9 @@ module Squeese
 		handler = @@handlers[name]
 		raise(NoSuchJob, name) unless handler
 		handler.call(args)
-		msg.delete
 	rescue => e
-		log "Deleting failed job." if msg
 		log exception_message(e)
-		msg.delete if msg
+		log "Deleted failed job." if msg
 	end
 
 	def log_job(name, args)
@@ -71,7 +69,7 @@ module Squeese
 	end
 
 	def log(msg)
-		puts "[#{Time.now}] #{msg}"
+		puts "[Squeese][#{Time.now}] #{msg}"
 	end
 
 	def sqs
