@@ -1,3 +1,5 @@
+#!/usr/bin/ruby
+
 $LOAD_PATH.unshift '../lib'
 require 'squeese'
 
@@ -16,3 +18,9 @@ end
 job 'cleanup.strays' do |args|
 	log "Cleaning up"
 end
+
+job 'error' do |args|
+	log "Throwing an Error"
+	throw RuntimeError
+end
+

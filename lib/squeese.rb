@@ -57,7 +57,9 @@ module Squeese
 		handler.call(args)
 		msg.delete
 	rescue => e
+		log "Deleting failed job." if msg
 		log exception_message(e)
+		msg.delete if msg
 	end
 
 	def log_job(name, args)
