@@ -81,7 +81,7 @@ module Squeese
 	end
 
 	def queue_name
-		@@queue_name ||= "squeese"
+		@@queue_name ||= (ENV['SQUEESE_QUEUE'] || "squeese")
 	end
 
 	def queue
