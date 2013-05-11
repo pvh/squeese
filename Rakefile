@@ -34,6 +34,8 @@ Rake::TestTask.new(:test) do |test|
   test.libs << 'lib' << 'test'
   test.pattern = 'test/**/test_*.rb'
   test.verbose = true
+  ENV['AWS_ACCESS_KEY_ID'] = "fake"
+  ENV['AWS_SECRET_ACCESS_KEY'] = "fake"
 end
 
 Jeweler::GemcutterTasks.new
