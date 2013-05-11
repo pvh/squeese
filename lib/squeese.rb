@@ -33,7 +33,7 @@ module Squeese
 			raise(NoSuchJob, job) unless @@handlers[job]
 		end
 
-		log "Working #{jobs.size} jobs  :: [ #{jobs.join(' ')} ]"
+		logger.info "Working #{jobs.size} jobs  :: [ #{jobs.join(' ')} ]"
 
 		loop do
 			work_one_job
@@ -51,29 +51,50 @@ module Squeese
 
 		name, args = JSON.parse msg.body
 		args = Hash.new {|h,k| h[k.to_s] if h.keys.include? k.to_s}.merge(args)
-		log_job(name, args)
+		logger.info({
+			job: name,
+			args: args
+		})
 		handler = @@handlers[name]
 		raise(NoSuchJob, name) unless handler
 		handler.call(args)
 	rescue => e
-		log exception_message(e)
-		log "Deleted failed job." if msg
-	end
-
-	def log_job(name, args)
-		args_flat = args.inject("") do |accum, (key,value)|
-			accum += "#{key}=#{value} "
+		if msg
+			logger.warning({
+				exception: e,
+				action: "drop",
+				job: name,
+				args: args
+			})
+		else
+			logger.warning({
+				exception: e,
+				action: "retry"
+			})
 		end
-
-		log sprintf("%-15s :: #{args_flat}", name)
 	end
 
-	def log(msg)
-		puts "[Squeese][#{Time.now}] #{msg}"
+	def logger=(val)
+		@@logger = val
+	end
+
+	def logger
+		unless defined? @@logger
+			@@logger ||= Logger.new(STDOUT)
+			@@logger.formatter = proc { |severity, datetime, progname, message|
+				JSON.dump({
+					severity: severity,
+					datetime: datetime,
+					progname: progname || 'Squeese',
+					message: message
+				})
+			}
+		end
+		@@logger
 	end
 
 	def sqs
-		@sqs ||= Aws::Sqs.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY'], :logger => Logger.new(nil))
+		@sqs ||= Aws::Sqs.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY'], :logger => logger)
 	end
 
 	def queue_name=(val)
