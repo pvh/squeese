@@ -1,2 +1,4 @@
 stalker.gemspec
 pkg
+*.sw[po]
+.rvmrc
